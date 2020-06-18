@@ -1,11 +1,11 @@
 <?php
-
-class DT_Starter_Post_Type {
+/*
+class DT_Visual_Customization_Post_Type {
 
     // Setup post type naming
-    public $post_type = 'starter_post_type';
-    public $single = 'Starter';
-    public $plural = 'Starters';
+    public $post_type = 'visual_post_type';
+    public $single = 'Visual Customization';
+    public $plural = 'Visual Customization';
 
     private static $_instance = null;
     public static function instance() {
@@ -221,7 +221,7 @@ class DT_Starter_Post_Type {
                 <?php esc_html_e( 'Locations', 'disciple_tools' )?> <a class="button clear" id="new-mapbox-search"><?php esc_html_e( "add", 'disciple_tools' ) ?></a>
             </label>
 
-            <?php /* If Mapbox Upgrade */ if ( DT_Mapbox_API::get_key() ) : ?>
+            <?php /* If Mapbox Upgrade */ /*if ( DT_Mapbox_API::get_key() ) : ?>
 
                 <div id="mapbox-wrapper"></div>
 
@@ -236,7 +236,7 @@ class DT_Starter_Post_Type {
                     </div>
                 <?php endif; ?>
 
-            <?php /* No Mapbox Upgrade */ else : ?>
+            <?php /* No Mapbox Upgrade */ /*else : ?>
 
                 <?php render_field_for_display( 'location_grid', $post_settings["fields"], $dt_post ); ?>
 
@@ -452,4 +452,4 @@ class DT_Starter_Post_Type {
         return $fields;
     }
 }
-DT_Starter_Post_Type::instance();
+DT_Visual_Customization_Post_Type::instance();

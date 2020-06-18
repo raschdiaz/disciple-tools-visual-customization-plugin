@@ -2,4 +2,4 @@
 {translation-domain}-{localisation}.po
  
 ex:  
-dt_starter_plugin.fr_FR.po
+dt_visual_customization_plugin.fr_FR.po
