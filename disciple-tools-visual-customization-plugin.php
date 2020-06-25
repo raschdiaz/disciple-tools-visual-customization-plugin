@@ -246,6 +246,8 @@ class DT_Visual_Customization_Plugin {
             $role->add_cap( 'manage_dt' ); // gives access to dt plugin options
         }
 
+        add_option('vc_primary_color', '#3f729b');
+        add_option('vc_font_style', 'Arial');
     }
 
     /**
@@ -257,6 +259,8 @@ class DT_Visual_Customization_Plugin {
      */
     public static function deactivation() {
         delete_option( 'dismissed-dt-visual-customization' );
+        delete_option('vc_primary_color');
+        delete_option('vc_font_style');
     }
 
     /**
