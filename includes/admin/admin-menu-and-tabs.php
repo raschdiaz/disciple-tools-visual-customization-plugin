@@ -99,11 +99,37 @@ class DT_Visual_Customization_Plugin_Menu
             $wpOptionVcFontStyle = get_option('vc_font_style');
         }
 
+        if (isset($_FILES['logo'])) {
+            $file = $_FILES['logo'];
+            echo print_r($file) . "</br>";
+            $imageSize = getimagesize($file['tmp_name']);
+            echo print_r($imageSize) . "</br>";
+            if ($imageSize !== false) {
+                $upload_overrides = array('test_form' => false);
+                // Upload File
+                $uploadFileResponse = wp_handle_upload($file, $upload_overrides);
+                if ($uploadFileResponse && !isset($uploadFileResponse['error'])) {
+                    //echo print_r($uploadFileResponse) . "</br>";
+                    $imageLocalPath = $uploadFileResponse['file'];
+                    $imagePublicPath = $uploadFileResponse['url'];
+                    echo print_r($imageLocalPath) . "</br>";
+                    echo print_r($imagePublicPath) . "</br>";
+                    // Get Upload Path Directory (USE TO CHECK IMAGE WITH SAME NAME AND REPLACE IT)
+                    $wp_upload_dir = wp_upload_dir();
+                    $url = $wp_upload_dir['url'] . '/' . basename($imagePublicPath);
+                    echo $url . "</br>";
+                } else {
+                    $error = $uploadFileResponse['error'];
+                    echo "Error message: " . $error . "</br>";
+                }
+            }
+        }
+
 ?>
         <div class="wrap">
             <div id="poststuff">
                 <div id="post-body" class="metabox-holder columns-2">
-                    <form action="" method="POST" class="form-basic">
+                    <form action="" method="post" enctype="multipart/form-data" class="form-basic">
 
                         <div class="form-title-row">
                             <h1>Visual Customization Settings <?php (isset($_POST)) ? print_r($_POST) : '' ?></h1>
@@ -128,10 +154,18 @@ class DT_Visual_Customization_Plugin_Menu
                         </div>
 
                         <div class="form-row">
+                            <label>
+                                Logo
+                            </label>
+                            <input type="file" name="logo">
+                        </div>
+
+                        <div class="form-row">
                             <button type="submit">Submit Form</button>
                         </div>
 
                     </form>
+
                 </div>
             </div>
 
