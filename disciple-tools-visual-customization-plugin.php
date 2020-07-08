@@ -248,6 +248,7 @@ class DT_Visual_Customization_Plugin {
 
         add_option('vc_primary_color', '#3f729b');
         add_option('vc_font_style', 'Arial');
+        add_option('vc_logo', '');
     }
 
     /**
@@ -261,6 +262,7 @@ class DT_Visual_Customization_Plugin {
         delete_option( 'dismissed-dt-visual-customization' );
         delete_option('vc_primary_color');
         delete_option('vc_font_style');
+        delete_option('vc_logo');
     }
 
     /**

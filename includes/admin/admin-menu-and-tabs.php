@@ -88,6 +88,8 @@ class DT_Visual_Customization_Plugin_Menu
         $wpOptionVcPrimaryColor = get_option('vc_primary_color');
         $wpOptionVcFontStyle = get_option('vc_font_style');
         $fontStyles = array('Comic Sans MS', 'Calibri', 'Arial');
+        $wpUploadDir = wp_upload_dir();
+        $logoPath = empty(get_option('vc_logo')) ? 'data:,' : $wpUploadDir["baseurl"] . get_option('vc_logo');
 
         if (isset($_POST['primary-color'])) {
             global $themePrimaryColorValue, $fontStyleValue;
@@ -101,23 +103,14 @@ class DT_Visual_Customization_Plugin_Menu
 
         if (isset($_FILES['logo'])) {
             $file = $_FILES['logo'];
-            echo print_r($file) . "</br>";
             $imageSize = getimagesize($file['tmp_name']);
-            echo print_r($imageSize) . "</br>";
             if ($imageSize !== false) {
                 $upload_overrides = array('test_form' => false);
                 // Upload File
                 $uploadFileResponse = wp_handle_upload($file, $upload_overrides);
                 if ($uploadFileResponse && !isset($uploadFileResponse['error'])) {
-                    //echo print_r($uploadFileResponse) . "</br>";
-                    $imageLocalPath = $uploadFileResponse['file'];
-                    $imagePublicPath = $uploadFileResponse['url'];
-                    echo print_r($imageLocalPath) . "</br>";
-                    echo print_r($imagePublicPath) . "</br>";
-                    // Get Upload Path Directory (USE TO CHECK IMAGE WITH SAME NAME AND REPLACE IT)
-                    $wp_upload_dir = wp_upload_dir();
-                    $url = $wp_upload_dir['url'] . '/' . basename($imagePublicPath);
-                    echo $url . "</br>";
+                    update_option('vc_logo', $wpUploadDir["subdir"] . "/" . $file["name"]);
+                    $logoPath = $wpUploadDir["baseurl"] . get_option('vc_logo');
                 } else {
                     $error = $uploadFileResponse['error'];
                     echo "Error message: " . $error . "</br>";
@@ -157,6 +150,8 @@ class DT_Visual_Customization_Plugin_Menu
                             <label>
                                 Logo
                             </label>
+                            <img src="<?php echo $logoPath; ?>" style="width: 200px; height: 100px;" />
+                            </br>
                             <input type="file" name="logo">
                         </div>
 
