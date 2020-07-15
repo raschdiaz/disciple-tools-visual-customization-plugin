@@ -85,20 +85,42 @@ class DT_Visual_Customization_Plugin_Menu
             wp_die(esc_attr__('You do not have sufficient permissions to access this page.'));
         }
 
-        $wpOptionVcPrimaryColor = get_option('vc_primary_color');
-        $wpOptionVcFontStyle = get_option('vc_font_style');
+        //INITIAL VARIABLES
         $fontStyles = array('Comic Sans MS', 'Calibri', 'Arial');
         $wpUploadDir = wp_upload_dir();
-        $logoPath = empty(get_option('vc_logo')) ? 'data:,' : $wpUploadDir["baseurl"] . get_option('vc_logo');
 
-        if (isset($_POST['primary-color'])) {
-            global $themePrimaryColorValue, $fontStyleValue;
-            $themePrimaryColorValue = sanitize_text_field($_POST['primary-color']);
+        // FORM SUBMIT -> UPDATE OPTIONS IN DATA BASE (BEFORE GET HIM IN VIEW)
+        if (isset($_POST['submit'])) {
+
+            //global $formColorTopbar, $fontStyleValue;
+
+            $formColorTopbar = sanitize_text_field($_POST['color-topbar']);
             $fontStyleValue = sanitize_text_field($_POST['font-style']);
-            update_option('vc_primary_color', $themePrimaryColorValue);
+            $formColorPrimary = sanitize_text_field($_POST['color-primary']);
+            $formColorSecondary = sanitize_text_field($_POST['color-secondary']);
+            $formColorSuccess = sanitize_text_field($_POST['color-success']);
+            $formColorDanger = sanitize_text_field($_POST['color-danger']);
+            $formColorWarning = sanitize_text_field($_POST['color-warning']);
+            $formColorInfo = sanitize_text_field($_POST['color-info']);
+            $formColorSwitch = sanitize_text_field($_POST['color-switch']);
+            $formColorLink = sanitize_text_field($_POST['color-link']);
+            $formColorTitles = sanitize_text_field($_POST['color-titles']);
+            $formColorBackground = sanitize_text_field($_POST['color-background']);
+            $formColorTiles = sanitize_text_field($_POST['color-tiles']);
+
+            update_option('vc_color_topbar', $formColorTopbar);
             update_option('vc_font_style', $fontStyleValue);
-            $wpOptionVcPrimaryColor = get_option('vc_primary_color');
-            $wpOptionVcFontStyle = get_option('vc_font_style');
+            update_option('vc_color_primary', $formColorPrimary);
+            update_option('vc_color_secondary', $formColorSecondary);
+            update_option('vc_color_success', $formColorSuccess);
+            update_option('vc_color_danger', $formColorDanger);
+            update_option('vc_color_warning', $formColorWarning);
+            update_option('vc_color_info', $formColorInfo);
+            update_option('vc_color_switch', $formColorSwitch);
+            update_option('vc_color_link', $formColorLink);
+            update_option('vc_color_titles', $formColorTitles);
+            update_option('vc_color_background', $formColorBackground);
+            update_option('vc_color_tiles', $formColorTiles);
         }
 
         if (isset($_FILES['logo'])) {
@@ -110,7 +132,7 @@ class DT_Visual_Customization_Plugin_Menu
                 $uploadFileResponse = wp_handle_upload($file, $upload_overrides);
                 if ($uploadFileResponse && !isset($uploadFileResponse['error'])) {
                     update_option('vc_logo', $wpUploadDir["subdir"] . "/" . $file["name"]);
-                    $logoPath = $wpUploadDir["baseurl"] . get_option('vc_logo');
+                    //$logoPath = $wpUploadDir["baseurl"] . get_option('vc_logo');
                 } else {
                     $error = $uploadFileResponse['error'];
                     echo "Error message: " . $error . "</br>";
@@ -118,51 +140,188 @@ class DT_Visual_Customization_Plugin_Menu
             }
         }
 
+        // GET OPTIONS SAVED IN DATABASE
+
+        $wpOptionVcColorTopbar = get_option('vc_color_topbar');
+        $wpOptionVcFontStyle = get_option('vc_font_style');
+        $wpOptionVcColorPrimary = get_option('vc_color_primary');
+        $wpOptionVcColorSecondary = get_option('vc_color_secondary');
+        $wpOptionVcColorSuccess = get_option('vc_color_success');
+        $wpOptionVcColorDanger = get_option('vc_color_danger');
+        $wpOptionVcColorWarning = get_option('vc_color_warning');
+        $wpOptionVcColorInfo = get_option('vc_color_info');
+        $wpOptionVcColorSwitch = get_option('vc_color_switch');
+        $wpOptionVcColorLink = get_option('vc_color_link');
+        $wpOptionVcColorTitles = get_option('vc_color_titles');
+        $wpOptionVcColorBackground = get_option('vc_color_background');
+        $wpOptionVcColorTiles = get_option('vc_color_tiles');
+        
+        $logoPath = empty(get_option('vc_logo')) ? 'data:,' : $wpUploadDir["baseurl"] . get_option('vc_logo');
+
+
 ?>
         <div class="wrap">
-            <div id="poststuff">
-                <div id="post-body" class="metabox-holder columns-2">
-                    <form action="" method="post" enctype="multipart/form-data" class="form-basic">
+            <h1>Visual Customization Settings <?php // (isset($_POST)) ? print_r($_POST) : '' ?></h1>
 
-                        <div class="form-title-row">
-                            <h1>Visual Customization Settings <?php (isset($_POST)) ? print_r($_POST) : '' ?></h1>
-                        </div>
+            <form action="" method="post" enctype="multipart/form-data" class="form-basic">
 
-                        <div class="form-row">
-                            <label>
-                                Theme Primary Color
-                            </label>
-                            <input type="color" name="primary-color" value="<?php echo ($wpOptionVcPrimaryColor) ? $wpOptionVcPrimaryColor : '' ?>" required>
-                        </div>
 
-                        <div class="form-row">
-                            <label>
-                                Font Style
-                            </label>
-                            <select name="font-style" required>
-                                <?php foreach ($fontStyles as $fontStyle) : ?>
-                                    <option style="font-family: '<?php echo $fontStyle ?>';" value="<?php echo $fontStyle ?>" <?php if ($fontStyle == $wpOptionVcFontStyle) : ?> selected="selected" <?php endif; ?>><?php echo $fontStyle ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                <h2 class="title">Colors</h2>
 
-                        <div class="form-row">
-                            <label>
-                                Logo
-                            </label>
-                            <img src="<?php echo $logoPath; ?>" style="width: 200px; height: 100px;" />
-                            </br>
-                            <input type="file" name="logo">
-                        </div>
+                <table class="form-table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">
+                                <label>Topbar Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-topbar" value="<?php echo ($wpOptionVcColorTopbar) ? $wpOptionVcColorTopbar : '' ?>" required>
+                            </td>
+                        </tr>
 
-                        <div class="form-row">
-                            <button type="submit">Submit Form</button>
-                        </div>
+                        <tr>
+                            <th scope="row">
+                                <label>Primary Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-primary" value="<?php echo ($wpOptionVcColorPrimary) ? $wpOptionVcColorPrimary : '' ?>" required>
+                            </td>
+                        </tr>
 
-                    </form>
+                        <tr>
+                            <th scope="row">
+                                <label>Secondary Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-secondary" value="<?php echo ($wpOptionVcColorSecondary) ? $wpOptionVcColorSecondary : '' ?>" required>
+                            </td>
+                        </tr>
 
-                </div>
-            </div>
+                        <tr>
+                            <th scope="row">
+                                <label>Success Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-success" value="<?php echo ($wpOptionVcColorSuccess) ? $wpOptionVcColorSuccess : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Danger Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-danger" value="<?php echo ($wpOptionVcColorDanger) ? $wpOptionVcColorDanger : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Warning Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-warning" value="<?php echo ($wpOptionVcColorWarning) ? $wpOptionVcColorWarning : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Info Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-info" value="<?php echo ($wpOptionVcColorInfo) ? $wpOptionVcColorInfo : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Switch Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-switch" value="<?php echo ($wpOptionVcColorSwitch) ? $wpOptionVcColorSwitch : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Link Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-link" value="<?php echo ($wpOptionVcColorLink) ? $wpOptionVcColorLink : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Titles Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-titles" value="<?php echo ($wpOptionVcColorTitles) ? $wpOptionVcColorTitles : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Background Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-background" value="<?php echo ($wpOptionVcColorBackground) ? $wpOptionVcColorBackground : '' ?>" required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label>Tiles Color</label>
+                            </th>
+                            <td>
+                                <input type="color" name="color-tiles" value="<?php echo ($wpOptionVcColorTiles) ? $wpOptionVcColorTiles : '' ?>" required>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <h2 class="title">Fonts</h2>
+
+                <table class="form-table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">
+                                <label>Font Style</label>
+                            </th>
+                            <td>
+                                <select name="font-style" required>
+                                    <?php foreach ($fontStyles as $fontStyle) : ?>
+                                        <option style="font-family: '<?php echo $fontStyle ?>';" value="<?php echo $fontStyle ?>" <?php if ($fontStyle == $wpOptionVcFontStyle) : ?> selected="selected" <?php endif; ?>><?php echo $fontStyle ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="title">Images</h2>
+
+                <table class="form-table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">
+                                <label>Logo</label>
+                            </th>
+                            <td>
+                                <img src="<?php echo $logoPath; ?>" style="width: 200px; height: 100px;" />
+                                <br>
+                                <input type="file" name="logo">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="submit">
+                    <button type="submit" name="submit" class="button button-primary">Submit Form</button>
+                </p>
+
+            </form>
 
         </div>
 

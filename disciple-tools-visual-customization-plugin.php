@@ -246,9 +246,20 @@ class DT_Visual_Customization_Plugin {
             $role->add_cap( 'manage_dt' ); // gives access to dt plugin options
         }
 
-        add_option('vc_primary_color', '#3f729b');
+        add_option('vc_color_topbar', '#3f729b');
         add_option('vc_font_style', 'Arial');
         add_option('vc_logo', '');
+        add_option('vc_color_primary', '#007bff');
+        add_option('vc_color_secondary', '#6c757d');
+        add_option('vc_color_success', '#28a745');
+        add_option('vc_color_danger', '#dc3545');
+        add_option('vc_color_warning', '#ffc107');
+        add_option('vc_color_info', '#17a2b8');
+        add_option('vc_color_switch', '#007bff');
+        add_option('vc_color_link', '#007bff');
+        add_option('vc_color_titles', '#007bff');
+        add_option('vc_color_background', '#fefefe');
+        add_option('vc_color_tiles', '#fefefe');
     }
 
     /**
@@ -260,9 +271,20 @@ class DT_Visual_Customization_Plugin {
      */
     public static function deactivation() {
         delete_option( 'dismissed-dt-visual-customization' );
-        delete_option('vc_primary_color');
+        delete_option('vc_color_topbar');
         delete_option('vc_font_style');
         delete_option('vc_logo');
+        delete_option('vc_color_primary');
+        delete_option('vc_color_secondary');
+        delete_option('vc_color_success');
+        delete_option('vc_color_danger');
+        delete_option('vc_color_warning');
+        delete_option('vc_color_info');
+        delete_option('vc_color_switch');
+        delete_option('vc_color_link');
+        delete_option('vc_color_titles');
+        delete_option('vc_color_background');
+        delete_option('vc_color_tiles');
     }
 
     /**
