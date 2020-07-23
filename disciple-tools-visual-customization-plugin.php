@@ -74,6 +74,7 @@ add_action('after_setup_theme', 'dt_visual_customization_plugin');
 
 // Add filters to hook theme 'apply_filters' methods
 add_filter('dt_default_logo', array('dt_visual_customization_plugin', 'set_logo_uri'));
+add_action('wp_enqueue_scripts', array('dt_visual_customization_plugin', 'vc_styles'));
 
 /**
  * Singleton class for setting up the plugin.
@@ -246,6 +247,16 @@ class DT_Visual_Customization_Plugin
     {
         $logoPath = empty(get_option('vc_logo')) ? $logoUri : wp_upload_dir()["baseurl"] . get_option('vc_logo');
         return $logoPath;
+    }
+
+    function vc_styles()
+    {
+        wp_enqueue_style('vc-styles', get_template_directory_uri() . '/dt-assets/scss/style.scss');
+        wp_add_inline_style('vc-styles', "
+            body {
+                font-family: " . get_option('vc_font_style') . "!important;
+            }
+        ");
     }
 
     /**
