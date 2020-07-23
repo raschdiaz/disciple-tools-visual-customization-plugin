@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Disciple Tools - Visual Customization
  * Plugin URI: 
@@ -15,7 +16,7 @@
  *          https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 $dt_visual_cutomization_required_dt_theme_version = '0.28.0';
@@ -27,7 +28,8 @@ $dt_visual_cutomization_required_dt_theme_version = '0.28.0';
  * @access public
  * @return object|bool
  */
-function dt_visual_customization_plugin() {
+function dt_visual_customization_plugin()
+{
     global $dt_visual_cutomization_required_dt_theme_version;
     $wp_theme = wp_get_theme();
     $version = $wp_theme->version;
@@ -35,19 +37,19 @@ function dt_visual_customization_plugin() {
     /*
      * Check if the Disciple.Tools theme is loaded and is the latest required version
      */
-    $is_theme_dt = strpos( $wp_theme->get_template(), "disciple-tools-theme" ) !== false || $wp_theme->name === "Disciple Tools";
-    if ( $is_theme_dt && version_compare( $version, $dt_visual_cutomization_required_dt_theme_version, "<" ) ) {
-        add_action( 'admin_notices', 'dt_visual_cutomization_plugin_hook_admin_notice' );
-        add_action( 'wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler' );
+    $is_theme_dt = strpos($wp_theme->get_template(), "disciple-tools-theme") !== false || $wp_theme->name === "Disciple Tools";
+    if ($is_theme_dt && version_compare($version, $dt_visual_cutomization_required_dt_theme_version, "<")) {
+        add_action('admin_notices', 'dt_visual_cutomization_plugin_hook_admin_notice');
+        add_action('wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler');
         return false;
     }
-    if ( !$is_theme_dt ){
+    if (!$is_theme_dt) {
         return false;
     }
     /**
      * Load useful function from the theme
      */
-    if ( !defined( 'DT_FUNCTIONS_READY' ) ){
+    if (!defined('DT_FUNCTIONS_READY')) {
         require_once get_template_directory() . '/dt-core/global-functions.php';
     }
     /*
@@ -55,7 +57,7 @@ function dt_visual_customization_plugin() {
      */
     $is_rest = dt_is_rest();
     //@todo change 'sample' if you want the plugin to be set up when using rest api calls other than ones with the 'sample' namespace
-    if ( ! $is_rest ){
+    if (!$is_rest) {
         return DT_Visual_Customization_Plugin::get_instance();
     }
     // @todo remove this "else if", if not using rest-api.php
@@ -63,11 +65,15 @@ function dt_visual_customization_plugin() {
     //    return DT_Visual_Customization_Plugin::get_instance();
     //}
     // @todo remove if not using a post type
-    else if ( strpos( dt_get_url_path(), 'visual_customization_post_type' ) !== false) {
+    else if (strpos(dt_get_url_path(), 'visual_customization_post_type') !== false) {
         return DT_Visual_Customization_Plugin::get_instance();
     }
 }
-add_action( 'after_setup_theme', 'dt_visual_customization_plugin' );
+add_action('after_setup_theme', 'dt_visual_customization_plugin');
+
+
+// Add filters to hook theme 'apply_filters' methods
+add_filter('dt_default_logo', array('dt_visual_customization_plugin', 'set_logo_uri'));
 
 /**
  * Singleton class for setting up the plugin.
@@ -75,7 +81,8 @@ add_action( 'after_setup_theme', 'dt_visual_customization_plugin' );
  * @since  0.1
  * @access public
  */
-class DT_Visual_Customization_Plugin {
+class DT_Visual_Customization_Plugin
+{
 
     /**
      * Declares public variables
@@ -98,11 +105,12 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return object
      */
-    public static function get_instance() {
+    public static function get_instance()
+    {
 
         static $instance = null;
 
-        if ( is_null( $instance ) ) {
+        if (is_null($instance)) {
             $instance = new dt_visual_customization_plugin();
             $instance->setup();
             $instance->includes();
@@ -118,7 +126,8 @@ class DT_Visual_Customization_Plugin {
      * @access private
      * @return void
      */
-    private function __construct() {
+    private function __construct()
+    {
     }
 
     /**
@@ -128,8 +137,9 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    private function includes() {
-        require_once( 'includes/admin/admin-menu-and-tabs.php' );
+    private function includes()
+    {
+        require_once('includes/admin/admin-menu-and-tabs.php');
     }
 
     /**
@@ -139,17 +149,18 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    private function setup() {
+    private function setup()
+    {
 
         // Main plugin directory path and URI.
-        $this->dir_path     = trailingslashit( plugin_dir_path( __FILE__ ) );
-        $this->dir_uri      = trailingslashit( plugin_dir_url( __FILE__ ) );
+        $this->dir_path     = trailingslashit(plugin_dir_path(__FILE__));
+        $this->dir_uri      = trailingslashit(plugin_dir_url(__FILE__));
 
         // Plugin directory paths.
-        $this->includes_path      = trailingslashit( $this->dir_path . 'includes' );
+        $this->includes_path      = trailingslashit($this->dir_path . 'includes');
 
         // Plugin directory URIs.
-        $this->img_uri      = trailingslashit( $this->dir_uri . 'img' );
+        $this->img_uri      = trailingslashit($this->dir_uri . 'img');
 
         // Admin and settings variables
         $this->token             = 'dt_visual_customization_plugin';
@@ -158,14 +169,13 @@ class DT_Visual_Customization_Plugin {
 
 
         // sample rest api class
-        require_once( 'includes/rest-api.php' );
+        require_once('includes/rest-api.php');
 
         // sample post type class
         //require_once( 'includes/post-type.php' );
 
         // custom site to site links
-        require_once( 'includes/custom-site-to-site-links.php' );
-
+        require_once('includes/custom-site-to-site-links.php');
     }
 
     /**
@@ -175,12 +185,13 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    private function setup_actions() {
+    private function setup_actions()
+    {
 
-        if ( is_admin() ){
+        if (is_admin()) {
             // Check for plugin updates
-            if ( ! class_exists( 'Puc_v4_Factory' ) ) {
-                require( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' );
+            if (!class_exists('Puc_v4_Factory')) {
+                require(get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php');
             }
             /**
              * Below is the publicly hosted .json file that carries the version information. This file can be hosted
@@ -189,21 +200,21 @@ class DT_Visual_Customization_Plugin {
              * Also, see the instructions for version updating to understand the steps involved.
              * @see https://github.com/DiscipleTools/disciple-tools-version-control/wiki/How-to-Update-the-Starter-Plugin
              */
-//            @todo enable this section with your own hosted file
-//            $hosted_json = "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/disciple-tools-visual-customization-plugin-version-control.json";
-//            Puc_v4_Factory::buildUpdateChecker(
-//                $hosted_json,
-//                __FILE__,
-//                'disciple-tools-visual-customization-plugin'
-//            );
+            //            @todo enable this section with your own hosted file
+            //            $hosted_json = "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/disciple-tools-visual-customization-plugin-version-control.json";
+            //            Puc_v4_Factory::buildUpdateChecker(
+            //                $hosted_json,
+            //                __FILE__,
+            //                'disciple-tools-visual-customization-plugin'
+            //            );
         }
 
         // Internationalize the text strings used.
-        add_action( 'init', array( $this, 'i18n' ), 2 );
+        add_action('init', array($this, 'i18n'), 2);
 
-        if ( is_admin() ) {
+        if (is_admin()) {
             // adds links to the plugin description area in the plugin admin list.
-            add_filter( 'plugin_row_meta', [ $this, 'plugin_description_links' ], 10, 4 );
+            add_filter('plugin_row_meta', [$this, 'plugin_description_links'], 10, 4);
         }
     }
 
@@ -218,8 +229,9 @@ class DT_Visual_Customization_Plugin {
      * @param   string      $status                 Status of the plugin
      * @return  array       $links_array
      */
-    public function plugin_description_links( $links_array, $plugin_file_name, $plugin_data, $status ) {
-        if ( strpos( $plugin_file_name, basename( __FILE__ ) ) ) {
+    public function plugin_description_links($links_array, $plugin_file_name, $plugin_data, $status)
+    {
+        if (strpos($plugin_file_name, basename(__FILE__))) {
             // You can still use `array_unshift()` to add links at the beginning.
 
             $links_array[] = '<a href="https://disciple.tools">Disciple.Tools Community</a>'; // @todo replace with your links.
@@ -230,6 +242,12 @@ class DT_Visual_Customization_Plugin {
         return $links_array;
     }
 
+    function set_logo_uri($logoUri)
+    {
+        $logoPath = empty(get_option('vc_logo')) ? $logoUri : wp_upload_dir()["baseurl"] . get_option('vc_logo');
+        return $logoPath;
+    }
+
     /**
      * Method that runs only when the plugin is activated.
      *
@@ -237,13 +255,14 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    public static function activation() {
+    public static function activation()
+    {
 
         // Confirm 'Administrator' has 'manage_dt' privilege. This is key in 'remote' configuration when
         // Disciple Tools theme is not installed, otherwise this will already have been installed by the Disciple Tools Theme
-        $role = get_role( 'administrator' );
-        if ( !empty( $role ) ) {
-            $role->add_cap( 'manage_dt' ); // gives access to dt plugin options
+        $role = get_role('administrator');
+        if (!empty($role)) {
+            $role->add_cap('manage_dt'); // gives access to dt plugin options
         }
 
         add_option('vc_color_topbar', '#3f729b');
@@ -269,8 +288,9 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    public static function deactivation() {
-        delete_option( 'dismissed-dt-visual-customization' );
+    public static function deactivation()
+    {
+        delete_option('dismissed-dt-visual-customization');
         delete_option('vc_color_topbar');
         delete_option('vc_font_style');
         delete_option('vc_logo');
@@ -285,6 +305,8 @@ class DT_Visual_Customization_Plugin {
         delete_option('vc_color_titles');
         delete_option('vc_color_background');
         delete_option('vc_color_tiles');
+
+        remove_filter('dt_default_logo', 'set_logo_uri');
     }
 
     /**
@@ -294,8 +316,9 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    public function i18n() {
-        load_plugin_textdomain( 'dt_visual_customization_plugin', false, trailingslashit( dirname( plugin_basename( __FILE__ ) ) ). 'languages' );
+    public function i18n()
+    {
+        load_plugin_textdomain('dt_visual_customization_plugin', false, trailingslashit(dirname(plugin_basename(__FILE__))) . 'languages');
     }
 
     /**
@@ -305,7 +328,8 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return 'dt_visual_customization_plugin';
     }
 
@@ -316,8 +340,9 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    public function __clone() {
-        _doing_it_wrong( __FUNCTION__, 'Whoah, partner!', '0.1' );
+    public function __clone()
+    {
+        _doing_it_wrong(__FUNCTION__, 'Whoah, partner!', '0.1');
     }
 
     /**
@@ -327,8 +352,9 @@ class DT_Visual_Customization_Plugin {
      * @access public
      * @return void
      */
-    public function __wakeup() {
-        _doing_it_wrong( __FUNCTION__, 'Whoah, partner!', '0.1' );
+    public function __wakeup()
+    {
+        _doing_it_wrong(__FUNCTION__, 'Whoah, partner!', '0.1');
     }
 
     /**
@@ -340,58 +366,61 @@ class DT_Visual_Customization_Plugin {
      * @since  0.1
      * @access public
      */
-    public function __call( $method = '', $args = array() ) {
-        _doing_it_wrong( "dt_visual_customization_plugin::" . esc_html( $method ), 'Method does not exist.', '0.1' );
-        unset( $method, $args );
+    public function __call($method = '', $args = array())
+    {
+        _doing_it_wrong("dt_visual_customization_plugin::" . esc_html($method), 'Method does not exist.', '0.1');
+        unset($method, $args);
         return null;
     }
 }
 // end main plugin class
 
 // Register activation hook.
-register_activation_hook( __FILE__, [ 'DT_Visual_Customization_Plugin', 'activation' ] );
-register_deactivation_hook( __FILE__, [ 'DT_Visual_Customization_Plugin', 'deactivation' ] );
+register_activation_hook(__FILE__, ['DT_Visual_Customization_Plugin', 'activation']);
+register_deactivation_hook(__FILE__, ['DT_Visual_Customization_Plugin', 'deactivation']);
 
-function dt_visual_cutomization_plugin_hook_admin_notice() {
+function dt_visual_cutomization_plugin_hook_admin_notice()
+{
     global $dt_visual_cutomization_required_dt_theme_version;
     $wp_theme = wp_get_theme();
     $current_version = $wp_theme->version;
-    $message = __( "'Disciple Tools - Visual Customization' plugin requires 'Disciple Tools' theme to work. Please activate 'Disciple Tools' theme or make sure it is latest version.", "dt_visual_customization_plugin" );
-    if ( $wp_theme->get_template() === "disciple-tools-theme" ){
-        $message .= sprintf( esc_html__( 'Current Disciple Tools version: %1$s, required version: %2$s', 'dt_visual_customization_plugin' ), esc_html( $current_version ), esc_html( $dt_visual_cutomization_required_dt_theme_version ) );
+    $message = __("'Disciple Tools - Visual Customization' plugin requires 'Disciple Tools' theme to work. Please activate 'Disciple Tools' theme or make sure it is latest version.", "dt_visual_customization_plugin");
+    if ($wp_theme->get_template() === "disciple-tools-theme") {
+        $message .= sprintf(esc_html__('Current Disciple Tools version: %1$s, required version: %2$s', 'dt_visual_customization_plugin'), esc_html($current_version), esc_html($dt_visual_cutomization_required_dt_theme_version));
     }
     // Check if it's been dismissed...
-    if ( ! get_option( 'dismissed-dt-visual-customization', false ) ) { ?>
+    if (!get_option('dismissed-dt-visual-customization', false)) { ?>
         <div class="notice notice-error notice-dt-visual-customization is-dismissible" data-notice="dt-visual-customization">
-            <p><?php echo esc_html( $message );?></p>
+            <p><?php echo esc_html($message); ?></p>
         </div>
         <script>
             jQuery(function($) {
-                $( document ).on( 'click', '.notice-dt-visual-customization .notice-dismiss', function () {
-                    $.ajax( ajaxurl, {
+                $(document).on('click', '.notice-dt-visual-customization .notice-dismiss', function() {
+                    $.ajax(ajaxurl, {
                         type: 'POST',
                         data: {
                             action: 'dismissed_notice_handler',
                             type: 'dt-visual-customization',
-                            security: '<?php echo esc_html( wp_create_nonce( 'wp_rest_dismiss' ) ) ?>'
+                            security: '<?php echo esc_html(wp_create_nonce('wp_rest_dismiss')) ?>'
                         }
                     })
                 });
             });
         </script>
-    <?php }
+<?php }
 }
 
 
 /**
  * AJAX handler to store the state of dismissible notices.
  */
-if ( !function_exists( "dt_hook_ajax_notice_handler" )){
-    function dt_hook_ajax_notice_handler(){
-        check_ajax_referer( 'wp_rest_dismiss', 'security' );
-        if ( isset( $_POST["type"] ) ){
-            $type = sanitize_text_field( wp_unslash( $_POST["type"] ) );
-            update_option( 'dismissed-' . $type, true );
+if (!function_exists("dt_hook_ajax_notice_handler")) {
+    function dt_hook_ajax_notice_handler()
+    {
+        check_ajax_referer('wp_rest_dismiss', 'security');
+        if (isset($_POST["type"])) {
+            $type = sanitize_text_field(wp_unslash($_POST["type"]));
+            update_option('dismissed-' . $type, true);
         }
     }
 }

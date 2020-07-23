@@ -155,13 +155,19 @@ class DT_Visual_Customization_Plugin_Menu
         $wpOptionVcColorTitles = get_option('vc_color_titles');
         $wpOptionVcColorBackground = get_option('vc_color_background');
         $wpOptionVcColorTiles = get_option('vc_color_tiles');
-        
+
         $logoPath = empty(get_option('vc_logo')) ? 'data:,' : $wpUploadDir["baseurl"] . get_option('vc_logo');
 
 
 ?>
         <div class="wrap">
-            <h1>Visual Customization Settings <?php // (isset($_POST)) ? print_r($_POST) : '' ?></h1>
+            <h1>
+                Visual Customization Settings
+                <?php
+                // (isset($_POST)) ? print_r($_POST) : '' 
+                //echo apply_filters('dt_default_logo', get_template_directory_uri() . "/dt-assets/images/disciple-tools-logo-white.png")
+                ?>
+            </h1>
 
             <form action="" method="post" enctype="multipart/form-data" class="form-basic">
 
