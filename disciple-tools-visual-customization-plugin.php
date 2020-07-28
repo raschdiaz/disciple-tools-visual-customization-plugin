@@ -253,9 +253,69 @@ class DT_Visual_Customization_Plugin
     {
         wp_enqueue_style('vc-styles', get_template_directory_uri() . '/dt-assets/scss/style.scss');
         wp_add_inline_style('vc-styles', "
+
             body {
-                font-family: " . get_option('vc_font_style') . "!important;
+                font-family: " . get_option('vc_font_style') . " !important;
+                background-color: ". get_option('vc_color_background'). " !important;
             }
+
+            .top-bar, 
+            .top-bar ul,
+            #top-bar-menu .dropdown.menu a,
+            #list-filter-tabs .is-active a, #list-filter-tabs .is-active a:focus {
+                background-color: ".get_option('vc_color_topbar')." !important;
+                color: #ffffff !important;
+            }
+
+            .top-bar .active a {
+                background-color: ".get_option('vc_color_topbar')." !important;
+                filter: brightness(0.85);
+            }
+
+            .list-name-link, .accordion-title {
+                color: ".get_option('vc_color_topbar')." !important;
+            }
+
+            .button, .button.disabled, 
+            .button.disabled:focus, 
+            .button.disabled:hover, 
+            .button[disabled], 
+            .button[disabled]:focus, 
+            .button[disabled]:hover {
+                background-color: ".get_option('vc_color_primary')." !important;
+            }
+
+            .button.clear, 
+            .button.clear.disabled, 
+            .button.clear.disabled:focus, 
+            .button.clear.disabled:hover, 
+            .button.clear[disabled], 
+            .button.clear[disabled]:focus, 
+            .button.clear[disabled]:hover {
+                background-color: ".get_option('vc_color_secondary')." !important;
+            }
+
+            .dt-green, a.dt-green:hover {
+                background-color: ".get_option('vc_color_success')." !important;
+            }
+
+            input.dt-switch:checked+label,
+            input:checked~.switch-paddle {
+                background: ".get_option('vc_color_switch')." !important;
+            }
+
+            a, a:focus, a:hover {
+                color: ".get_option('vc_color_link')." !important;
+            }
+
+            .title, .section-header {
+                color: ".get_option('vc_color_titles')." !important;
+            }
+
+            .detail-notification-box {
+                background-color: ".get_option('vc_color_danger')." !important;
+            }
+
         ");
     }
 
