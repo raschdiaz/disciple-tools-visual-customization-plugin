@@ -75,6 +75,7 @@ add_action('after_setup_theme', 'dt_visual_customization_plugin');
 // Add filters to hook theme 'apply_filters' methods
 add_filter('dt_default_logo', array('dt_visual_customization_plugin', 'set_logo_uri'));
 add_action('wp_enqueue_scripts', array('dt_visual_customization_plugin', 'vc_styles'));
+add_action( 'login_enqueue_scripts', array('dt_visual_customization_plugin', 'vc_login_styles'));
 
 /**
  * Singleton class for setting up the plugin.
@@ -304,8 +305,13 @@ class DT_Visual_Customization_Plugin
                 background: ".get_option('vc_color_switch')." !important;
             }
 
-            a, a:focus, a:hover {
+            .list-name-link,
+            .dropdown.menu a,
+            .filter label:hover, .list-views label:hover {
                 color: ".get_option('vc_color_link')." !important;
+            }
+            .dropdown.menu>li.is-dropdown-submenu-parent>a:after {
+                border-top-color: ".get_option('vc_color_link')." !important;
             }
 
             .title, .section-header {
@@ -314,6 +320,46 @@ class DT_Visual_Customization_Plugin
 
             .detail-notification-box {
                 background-color: ".get_option('vc_color_danger')." !important;
+            }
+
+        ");
+    }
+
+    function vc_login_styles()
+    {
+        wp_enqueue_style('vc-login-styles', get_template_directory_uri() . '/dt-assets/scss/style.scss');
+        wp_add_inline_style('vc-login-styles', "
+
+            #login h1 {
+                display: initial !important;
+            }
+
+            .login h1 a {
+                background-image: url(".self::set_logo_uri("").");
+            }
+
+            body {
+                font-family: " . get_option('vc_font_style') . " !important;
+                background-color: ". get_option('vc_color_background'). " !important;
+            }
+
+            .list-name-link,
+            .dropdown.menu a,
+            .filter label:hover, .list-views label:hover {
+                color: ".get_option('vc_color_link')." !important;
+            }
+
+            .button, .button.disabled, 
+            .button.disabled:focus, 
+            .button.disabled:hover, 
+            .button[disabled], 
+            .button[disabled]:focus, 
+            .button[disabled]:hover {
+                background-color: ".get_option('vc_color_primary')." !important;
+            }
+
+            a, a:focus, a:hover {
+                color: ".get_option('vc_color_link')." !important;
             }
 
         ");
